@@ -6,6 +6,17 @@ from sklearn.impute import SimpleImputer
 from sklearn.metrics import accuracy_score, f1_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OrdinalEncoder, StandardScaler
+import os
+
+
+# --- Info ---
+print("✅ Current working directory:", os.getcwd())
+print("📂 Directory contents:", os.listdir("."))
+
+# --- Ensure output dirs exist ---
+os.makedirs("Results", exist_ok=True)
+os.makedirs("Model", exist_ok=True)
+
 
 ## Loading the Data
 drug_df = pd.read_csv("Data/drug200.csv")
@@ -60,11 +71,17 @@ predictions = pipe.predict(X_test)
 cm = confusion_matrix(y_test, predictions, labels=pipe.classes_)
 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=pipe.classes_)
 disp.plot()
-plt.savefig("./Results/model_results.png", dpi=120)
+plot_path = "Results/model_results.png"
+plt.savefig(plot_path, dpi=120)
+print(f"📈 Confusion matrix plot saved to: {plot_path}")
 
 ## Write metrics to file
-with open("./Results/metrics.txt", "w") as outfile:
+metrics_path = "Results/metrics.txt"
+with open(metrics_path, "w") as outfile:
     outfile.write(f"\nAccuracy = {round(accuracy, 2)}, F1 Score = {round(f1, 2)}")
+    print(f"✅ Metrics saved to: {metrics_path}")
 
 ## Saving the model file
-sio.dump(pipe, "./Model/drug_pipeline.skops")
+model_path = "Model/drug_pipeline.skops"
+sio.dump(pipe, model_path)
+print(f"✅ Model saved to: {model_path}")
